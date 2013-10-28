@@ -528,7 +528,7 @@
 							if (new Date (hDate).toDateString() === new Date (time).toDateString()) {
 								hDate = 'Today';
 							} else if (new Date (hDate).toDateString() === new Date (time - 86400000).toDateString()) {
-								hDate = 'Yesterday'
+								hDate = 'Yesterday';
 							} else {
 								hDate = $filter('date')(new Date (hDate), 'EEEE');
 							}
@@ -642,9 +642,9 @@
 				    $(this).each(function (idx, jqXHR) { 
 				        jqXHR.abort();
 				    });
-				    $.xhrPool.length = 0
+				    $.xhrPool.length = 0;
 				};
-				 
+
 				$.ajaxSetup({
 				    beforeSend: function (jqXHR) {
 				        $.xhrPool.push(jqXHR);
@@ -979,7 +979,7 @@
 			
 			updateWatchedData: function () {
 				var self = this;
-				
+
 				$.ajax({
 					dataType : 'json',
 					url: 'http://mal-api.com/animelist/' + self.login + '?nocache=' + (new Date().getTime())
