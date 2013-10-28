@@ -1,0 +1,358 @@
+<div class="row-fluid" ng-controller="ListAnimes" ng-init="initApp()">
+	<ul class="thumbnails" class="dropdown" id="dropdownMenu">
+		<li ng-repeat="anime in serviceAnime.animes | orderBy: serviceAnime.orderBy:serviceAnime.orderReverse" ng-dblclick="getDetails(anime)" class="col-sm-1">
+			<div class="thumbnail" ng-rclick="changeAnimeFocus(anime)">
+				<div class="caption">
+					<h6 ng-bind-html-unsafe="anime.title"></h6>
+				</div>
+				<div class="rBadge"><h6>{{getRBadge(anime)}}</h6></div><div ng-show="serviceAnime.viewLBadge" class="lBadge"><h6 ng-compile="getLBadge(anime)"></h6></div><p ng-backimg="{{anime.image_url}}" ng-style="{ width: serviceAnime.imagesWidth + 'px', height: serviceAnime.imagesHeight + 'px', 'background-size': serviceAnime.imagesWidth + 'px ' + serviceAnime.imagesHeight +'px', 'background-repeat': 'no-repeat' }"></p>
+			</div>
+		</li>
+	</ul>
+	<div class="pagination pull-right hide">
+		<ul>
+			<li id="prevPage"><a ng-click="viewPrevPage()" href="">Prev</a></li>
+			<li><a href="" id="page"></a></li>
+			<li><a ng-click="viewNextPage()" href="">Next</a></li>
+		</ul>
+	</div>
+	<ul class="dropdown-menu" role="menu" id="contextMenu">
+		<li class="dropdown-submenu">
+			<a ng-show="serviceAnime.viewAddButton" href=""><i class="icon-plus"></i>Add</a>
+			<ul class="dropdown-menu">
+				<li><a ng-click="addAnime(dAnime.id, 'watching')" href=""><i class="icon-list"></i>Watching</a></li>
+				<li><a ng-click="addAnime(dAnime.id, 'completed')" href=""><i class="icon-list"></i>Completed</a></li>
+				<li><a ng-click="addAnime(dAnime.id, 'on-hold')" href=""><i class="icon-list"></i>On-hold</a></li>
+				<li><a ng-click="addAnime(dAnime.id, 'dropped')" href=""><i class="icon-list"></i>Dropped</a></li>
+				<li><a ng-click="addAnime(dAnime.id, 'plan to watch')" href=""><i class="icon-list"></i>Plan to watch</a></li>
+			</ul>
+		</li>
+		<li><a ng-show="serviceAnime.viewEditButtons" ng-click="editDetails(dAnime)" href=""><i class="icon-edit"></i>Edit</a></li>
+		<li><a ng-show="serviceAnime.viewEditButtons" ng-click="delAnime(dAnime.id)" href=""><i class="icon-trash"></i>Delete</a></li>
+		<li class="divider"></li>
+		<li><a ng-click="getDetails(dAnime)" href=""><i class="icon-zoom-in"></i>Details</a></li>
+		<li class="dropdown-submenu">
+			<a href=""><i class="icon-plus-sign"></i>More</a>
+			<ul class="dropdown-menu">
+				<li><a href="" onclick="window.open('http://adala-news.fr/tag/' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="false"><i class="icon-globe"></i>Adala News</a></li>
+				<li><a href="" onclick="window.open('http://www.anime-kun.net/animes/animedb-.html?annee=' + '{{dAnime.start_date}}'.substr(9,4) + '&n1=0&n2=10&nbc=0&s=1&o=1&f=1&sp=1&m=1&search=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="false"><i class="icon-globe"></i>Anime-Kun</a></li>
+				<li><a href="" onclick="window.open('https://www.google.fr/search?safe=off&q=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="false"><i class="icon-globe"></i>Google</a></li>
+				<li><a href="" onclick="window.open('http://www.myanimelist.net/anime/{{dAnime.id}}', '_blank')" value="true"><i class="icon-globe"></i>MyAnimeList</a></li>
+				<li><a href="" onclick="window.open('http://www.t411.me/torrents/search/?search=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="true"><i class="icon-globe"></i>T411</a></li>
+				<li><a href="" onclick="window.open('https://www.youtube.com/results?q=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="true"><i class="icon-globe"></i>Youtube</a></li>
+				<li><a href="" onclick="window.open('http://fr.wikipedia.org/w/index.php?search=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="true"><i class="icon-globe"></i>Wikipedia</a></li>
+			</ul>
+		<li>
+	</ul>
+	<div modal="serviceAnime.viewLoginModal" options="optsLoginModal">
+		<div class="modal-header">
+			<button class="close" ng-click="closeModal('login')">&times;</button><h3><i class="icon-lock"></i> Login</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row-fluid">
+				<span class="span4 inputLabel">Login</span><div class="span8"><input class="pull-right" type="text" ng-model="login" required /></div>
+			</div>
+			<div class="row-fluid">
+				<span class="span4 inputLabel">Password</span><div class="span8"><input class="pull-right" type="password" ng-model="password" required /></div>
+			</div>
+			<div class="row-fluid">
+				<span ng-bind-html-unsafe="serviceAnime.loginStatus" class="pull-right"></span>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" ng-click="closeModal('login')"><i class="icon-remove"></i>Cancel</button> <button class="btn" ng-click="saveLogin(login, password)"><i class="icon-save"></i>Save</button>
+		</div>
+	</div>
+	<div modal="serviceAnime.viewSearchModal" options="optsSearchModal">
+		<div class="modal-header">
+			<button class="close" ng-click="closeModal('search')">&times;</button><h3><i class="icon-search"></i> Search</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row-fluid">
+				<span class="span3 inputLabel">Anime</span><div class="span9"><input class="pull-right" type="text" ng-model="search" required /></div>
+			</div>
+			<div class="row-fluid">
+				<span class="pull-right">{{serviceAnime.searchStatus}}</span>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" ng-click="closeModal('search')"><i class="icon-remove"></i>Cancel</button> <button class="btn" ng-click="applySearch()"><i class="icon-search"></i>Search</button>
+		</div>
+	</div>
+	<div modal="serviceAnime.viewDetailsModal" options="optsDetailsModal">
+		<div class="modal-header">
+			<button class="close" ng-click="closeModal('details')">&times;</button><h3 ng-bind-html-unsafe="dAnime.title"></h3><small class="grey">({{dAnime.other_titles}})</small>
+		</div>
+		<div class="modal-body">
+			<div class="row-fluid">
+				<div class="span2">
+					<img ng-src="{{dAnime.image_url}}" style="width: 95px; height: 142px;" alt="">
+				</div>
+				<div class="span10">
+					<div class="row-fluid">
+						<div class="span6"><strong>Type:</strong> <span class="grey">{{dAnime.type}}</span></div><div class="span6"><strong>Episodes:</strong> <span class="grey">{{formatInt(dAnime.episodes)}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span6"><strong>Status:</strong> <span class="grey">{{dAnime.status}}</span></div><div class="span6"><strong>Airing:</strong> <span class="grey">{{dAnime.start_date | date:'MMM d, y'}} to {{dAnime.end_date | date:'MMM d, y'}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span6"><strong>Score:</strong> <span class="grey">{{formatInt(dAnime.members_score)}}</span></div><div class="span6"><strong>Ranked:</strong> <span class="grey">{{formatInt(dAnime.rank)}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span6"><strong>Popularity:</strong> <span class="grey">{{formatInt(dAnime.popularity_rank)}}</span></div><div class="span6"><strong>Rating:</strong> <span class="grey">{{dAnime.classification}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span12"><strong>Genres:</strong> <span class="grey">{{dAnime.genres}}</span></div>
+					</div>
+				</div>
+			</div>
+			<div class="row-fluid synopsis">
+				<strong>Synopsis:</strong> <span class="grey" ng-bind-html-unsafe="dAnime.synopsis"></span>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group dropup">
+				<button ng-show="serviceAnime.viewAddButton" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-plus"></i>Add&nbsp;&nbsp;<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a ng-click="addAnime(dAnime.id, 'watching')" href=""><i class="icon-list"></i>Watching</a></li>
+					<li><a ng-click="addAnime(dAnime.id, 'completed')" href=""><i class="icon-list"></i>Completed</a></li>
+					<li><a ng-click="addAnime(dAnime.id, 'on-hold')" href=""><i class="icon-list"></i>On-hold</a></li>
+					<li><a ng-click="addAnime(dAnime.id, 'dropped')" href=""><i class="icon-list"></i>Dropped</a></li>
+					<li><a ng-click="addAnime(dAnime.id, 'plan to watch')" href=""><i class="icon-list"></i>Plan to watch</a></li>
+				</ul>
+			</div>
+			<button ng-show="serviceAnime.viewEditButtons" class="btn" ng-click="editDetails(dAnime)"><i class="icon-edit"></i>Edit</button>
+			<button ng-show="serviceAnime.viewEditButtons" class="btn" ng-click="delAnime(dAnime.id)"><i class="icon-trash"></i>Delete</button>
+			&nbsp;<div class="btn-group dropup">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-plus-sign"></i>More&nbsp;&nbsp;<span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a href="" onclick="window.open('http://adala-news.fr/tag/' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="false"><i class="icon-globe"></i>Adala News</a></li>
+					<li><a href="" onclick="window.open('http://www.anime-kun.net/animes/animedb-.html?annee=' + '{{dAnime.start_date}}'.substr(9,4) + '&n1=0&n2=10&nbc=0&s=1&o=1&f=1&sp=1&m=1&search=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="false"><i class="icon-globe"></i>Anime-Kun</a></li>
+					<li><a href="" onclick="window.open('https://www.google.fr/search?safe=off&q=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="false"><i class="icon-globe"></i>Google</a></li>
+					<li><a href="" onclick="window.open('http://www.myanimelist.net/anime/{{dAnime.id}}', '_blank')" value="true"><i class="icon-globe"></i>MyAnimeList</a></li>
+					<li><a href="" onclick="window.open('http://www.t411.me/torrents/search/?search=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="true"><i class="icon-globe"></i>T411</a></li>
+					<li><a href="" onclick="window.open('https://www.youtube.com/results?q=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="true"><i class="icon-globe"></i>Youtube</a></li>
+					<li><a href="" onclick="window.open('http://fr.wikipedia.org/w/index.php?search=' + encodeURIComponent('{{dAnime.title}}'), '_blank')" value="true"><i class="icon-globe"></i>Wikipedia</a></li>
+				</ul>
+			</div>
+			&nbsp;<button class="btn" ng-click="closeModal('details')"><i class="icon-remove"></i>Close</button>
+		</div>
+	</div>
+	<div modal="serviceAnime.viewEditModal" options="optsEditModal">
+		<div class="modal-header">
+			<button class="close" ng-click="closeModal('edit')">&times;</button><h3><i class="icon-edit"></i> Edit</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row-fluid">
+				<span class="span5 inputLabelEdit">Status</span>
+				<div class="span7">
+					<select ng-model="watched_status">
+					  <option value="watching">Watching</option>
+					  <option value="completed">Completed</option>
+					  <option value="on-hold">On-hold</option>
+					  <option value="dropped">Dropped</option>
+					  <option value="plan to watch">Plan to watch</option>
+					</select>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<span class="span5 inputLabelEdit">Episodes</span>
+				<div class="span7">
+					<input class="smallInput" type="number" ng-model="watched_episodes" required /> / &nbsp;{{dAnime.episodes}}
+				</div>
+			</div>
+			<div class="row-fluid">
+				<span class="span5">Score</span><div class="span7"><rating value="score" max="max"></rating></div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" ng-click="closeModal('edit')"><i class="icon-remove"></i>Cancel</button> <button class="btn" ng-click="closeModal('edit'); editAnime(dAnime, watched_episodes, score, watched_status)"><i class="icon-save"></i>Save</button>
+		</div>
+	</div>
+	<div modal="serviceAnime.viewAboutModal" options="optsAboutModal">
+		<div class="modal-header text-center">
+			<button class="close" ng-click="closeModal('about')">&times;</button><span class="malv">MAL Viewer</span>
+		</div>
+		<div class="modal-body text-center small">
+			<div class="row-fluid">
+				Version: <span class="grey">1.1.3</span>
+			</div>
+			<div class="row-fluid copyright">
+				Copyright <span class="grey">&copy;</span> 2013 <a href="http://www.josselinbuils.fr" target="blank">Josselin BUILS</a>
+			</div>
+		</div>
+	</div>
+	<div modal="serviceAnime.viewStatsModal" options="optsStatsModal">
+		<div class="modal-header">
+			<button class="close" ng-click="closeModal('stats')">&times;</button><h3><i class="icon-bar-chart"></i> Statistics</h3>
+		</div>
+		<div class="modal-body">
+			<tabset>
+	 			<tab heading="General">
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.general.kindProgress"></progress>
+					</div>
+	 				<div class="row-fluid">
+						<div class="span4">Movies: <span class="grey">{{serviceAnime.statistics.general.movies}}</span></div><div class="span4">OVA: <span class="grey">{{serviceAnime.statistics.general.ova}}</span></div><div class="span4">Specials: <span class="grey">{{serviceAnime.statistics.general.specials}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">TV: <span class="grey">{{serviceAnime.statistics.general.tv}}</span></div><div class="span4">Total: <span class="grey">{{serviceAnime.statistics.general.total}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.general.episodesProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span6">Watched episodes: <span class="grey">{{serviceAnime.statistics.general.watched}}</span></div><div class="span6">Total: <span class="grey">{{serviceAnime.statistics.general.episodes}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.general.scoreProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Mean score: <span class="grey">{{serviceAnime.statistics.general.mean_score}}</span></div><div class="span4">Members: <span class="grey">{{serviceAnime.statistics.general.members}}</span></div><div class="span4">Mean gap: <span class="grey">{{serviceAnime.statistics.general.mean_gap}}</span></div>
+					</div>
+	 			</tab>
+	 			<tab heading="Watching">
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.watching.kindProgress"></progress>
+					</div>
+	 				<div class="row-fluid">
+						<div class="span4">Movies: <span class="grey">{{serviceAnime.statistics.watching.movies}}</span></div><div class="span4">OVA: <span class="grey">{{serviceAnime.statistics.watching.ova}}</span></div><div class="span4">Specials: <span class="grey">{{serviceAnime.statistics.watching.specials}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">TV: <span class="grey">{{serviceAnime.statistics.watching.tv}}</span></div><div class="span4">Total: <span class="grey">{{serviceAnime.statistics.watching.total}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.watching.episodesProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span6">Watched episodes: <span class="grey">{{serviceAnime.statistics.watching.watched}}</span></div><div class="span6">Total: <span class="grey">{{serviceAnime.statistics.watching.episodes}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.watching.scoreProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Mean score: <span class="grey">{{serviceAnime.statistics.watching.mean_score}}</span></div><div class="span4">Members: <span class="grey">{{serviceAnime.statistics.watching.members}}</span></div><div class="span4">Mean gap: <span class="grey">{{serviceAnime.statistics.watching.mean_gap}}</span></div>
+					</div>
+	 			</tab>
+	 			<tab heading="Completed">
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.completed.kindProgress"></progress>
+					</div>
+	 				<div class="row-fluid">
+						<div class="span4">Movies: <span class="grey">{{serviceAnime.statistics.completed.movies}}</span></div><div class="span4">OVA: <span class="grey">{{serviceAnime.statistics.completed.ova}}</span></div><div class="span4">Specials: <span class="grey">{{serviceAnime.statistics.completed.specials}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">TV: <span class="grey">{{serviceAnime.statistics.completed.tv}}</span></div><div class="span4">Total: <span class="grey">{{serviceAnime.statistics.completed.total}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.completed.episodesProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span6">Watched episodes: <span class="grey">{{serviceAnime.statistics.completed.watched}}</span></div><div class="span6">Total: <span class="grey">{{serviceAnime.statistics.completed.episodes}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.completed.scoreProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Mean score: <span class="grey">{{serviceAnime.statistics.completed.mean_score}}</span></div><div class="span4">Members: <span class="grey">{{serviceAnime.statistics.completed.members}}</span></div><div class="span4">Mean gap: <span class="grey">{{serviceAnime.statistics.completed.mean_gap}}</span></div>
+					</div>
+	 			</tab>
+	 			<tab heading="On-hold">
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics['on-hold'].kindProgress"></progress>
+					</div>
+	 				<div class="row-fluid">
+						<div class="span4">Movies: <span class="grey">{{serviceAnime.statistics['on-hold'].movies}}</span></div><div class="span4">OVA: <span class="grey">{{serviceAnime.statistics['on-hold'].ova}}</span></div><div class="span4">Specials: <span class="grey">{{serviceAnime.statistics['on-hold'].specials}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">TV: <span class="grey">{{serviceAnime.statistics['on-hold'].tv}}</span></div><div class="span4">Total: <span class="grey">{{serviceAnime.statistics['on-hold'].total}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics['on-hold'].episodesProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span6">Watched episodes: <span class="grey">{{serviceAnime.statistics['on-hold'].watched}}</span></div><div class="span6">Total: <span class="grey">{{serviceAnime.statistics['on-hold'].episodes}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics['on-hold'].scoreProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Mean score: <span class="grey">{{serviceAnime.statistics['on-hold'].mean_score}}</span></div><div class="span4">Members: <span class="grey">{{serviceAnime.statistics['on-hold'].members}}</span></div><div class="span4">Mean gap: <span class="grey">{{serviceAnime.statistics['on-hold'].mean_gap}}</span></div>
+					</div>
+	 			</tab>
+	 			<tab heading="Dropped">
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.dropped.kindProgress"></progress>
+					</div>
+	 				<div class="row-fluid">
+						<div class="span4">Movies: <span class="grey">{{serviceAnime.statistics.dropped.movies}}</span></div><div class="span4">OVA: <span class="grey">{{serviceAnime.statistics.dropped.ova}}</span></div><div class="span4">Specials: <span class="grey">{{serviceAnime.statistics.dropped.specials}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">TV: <span class="grey">{{serviceAnime.statistics.dropped.tv}}</span></div><div class="span4">Total: <span class="grey">{{serviceAnime.statistics.dropped.total}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.dropped.episodesProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span6">Watched episodes: <span class="grey">{{serviceAnime.statistics.dropped.watched}}</span></div><div class="span6">Total: <span class="grey">{{serviceAnime.statistics.dropped.episodes}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics.dropped.scoreProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Mean score: <span class="grey">{{serviceAnime.statistics.dropped.mean_score}}</span></div><div class="span4">Members: <span class="grey">{{serviceAnime.statistics.dropped.members}}</span></div><div class="span4">Mean gap: <span class="grey">{{serviceAnime.statistics.dropped.mean_gap}}</span></div>
+					</div>
+	 			</tab>
+	 			<tab heading="Plan to watch">
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics['plan to watch'].kindProgress"></progress>
+					</div>
+	 				<div class="row-fluid">
+						<div class="span4">Movies: <span class="grey">{{serviceAnime.statistics['plan to watch'].movies}}</span></div><div class="span4">OVA: <span class="grey">{{serviceAnime.statistics['plan to watch'].ova}}</span></div><div class="span4">Specials: <span class="grey">{{serviceAnime.statistics['plan to watch'].specials}}</span></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">TV: <span class="grey">{{serviceAnime.statistics['plan to watch'].tv}}</span></div><div class="span4">Total: <span class="grey">{{serviceAnime.statistics['plan to watch'].total}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics['plan to watch'].episodesProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span6">Watched episodes: <span class="grey">{{serviceAnime.statistics['plan to watch'].watched}}</span></div><div class="span6">Total: <span class="grey">{{serviceAnime.statistics['plan to watch'].episodes}}</span></div>
+					</div>
+	 				<div class="row-fluid">
+						<progress percent="serviceAnime.statistics['plan to watch'].scoreProgress"></progress>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Mean score: <span class="grey">{{serviceAnime.statistics['plan to watch'].mean_score}}</span></div><div class="span4">Members: <span class="grey">{{serviceAnime.statistics['plan to watch'].members}}</span></div><div class="span4">Mean gap: <span class="grey">{{serviceAnime.statistics['plan to watch'].mean_gap}}</span></div>
+					</div>
+	 			</tab>
+			</tabset>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" ng-click="closeModal('stats')"><i class="icon-remove"></i>Close</button>
+		</div>
+	</div>
+	<div modal="serviceAnime.viewHistoryModal" options="optsHistoryModal">
+		<div class="modal-header">
+			<button class="close" ng-click="closeModal('history')">&times;</button><h3><i class="icon-book"></i> History</h3>
+		</div>
+		<div class="modal-body">
+			<table class="table table-bordered" ng-repeat="date in serviceAnime.history">
+				<thead>
+					<tr>
+						<th>{{date[0].date}}<span class="pull-right grey">{{date.length}}</span></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="anime in date">
+						<td><span class="episode">{{anime.episode}}</span>{{anime.title}}<span class="pull-right" ng-bind-html-unsafe="anime.time"></span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" ng-click="closeModal('history')"><i class="icon-remove"></i>Close</button>
+		</div>
+	</div>
+</div>

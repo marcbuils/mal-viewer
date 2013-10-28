@@ -1,0 +1,348 @@
+body {
+	padding-top: 62px;
+	background-image: url("../images/texturegrey.png");
+	overflow: auto;
+	height: 100%;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	text-rendering: auto;
+}
+
+html {
+	height: 100%;
+	overflow: hidden;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
+#h-slider {
+	width: 100px;
+	margin: 14px 40px 0 0;
+}
+
+.thumbnail {
+	position: relative;
+	overflow: hidden;
+	padding: 6px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+ul {
+	text-align: left;
+}
+
+.rBadge {
+	position: absolute;
+	top: 7px;
+	right: 7px;
+	background: rgba(0, 0, 0, 0.6);
+	color: #c8c8c8 !important;
+	display: inline-block;
+	padding: 1px 5px 0 6px;
+	border-style: solid;
+	border-color: black;
+	border-width: 0 0 1px 1px;
+	-webkit-border-radius: 0 2px 0 6px;
+	-moz-border-radius: 0 2px 0 6px;
+	border-radius: 0 2px 0 6px;
+}
+
+.lBadge {
+	position: absolute;
+	top: 7px;
+	left: 7px;
+	background: rgba(0, 0, 0, 0.6);
+	color: #c8c8c8 !important;
+	display: inline-block;
+	padding: 1px 6px 0 5px;
+	border-style: solid;
+	border-color: black;
+	border-width: 0 1px 1px 0;
+	-webkit-border-radius: 2px 0 6px 0;
+	-moz-border-radius: 2px 0 6px 0;
+	border-radius: 2px 0 6px 0;
+}
+
+.modal {
+	top: 20%;
+	width: 400px;
+	margin-left: -200px;
+}
+
+.aboutModal {
+	width: 250px;
+	margin-left: -125px;
+}
+
+.searchModal {
+	width: 350px;
+	margin-left: -175px;
+}
+
+.detailsModal {
+	width: 750px;
+	margin-left: -375px;
+	top: 10%;
+}
+
+.loginModal {
+	width: 380px;
+	margin-left: -190px;
+}
+
+.editModal {
+	width: 257px;
+	margin-left: -128px;
+}
+
+.historyModal {
+	width: 600px;
+	margin-left: -300px;
+	top: 10%;
+}
+
+.statsModal {
+	width: 630px;
+	margin-left: -315px;
+	top: 10%;
+}
+
+.smallInput {
+	width: 55px;
+	height: 30px !important;
+	margin: 5px 7px 0 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+}
+
+select {
+	width: 120px;
+	height: 30px;
+	margin-top: 5px;
+}
+
+.loadStatus {
+	display: inline-block;
+	padding-top: 9px;
+}
+
+.navbar-fixed-bottom {
+	text-align: center;
+}
+
+.navbar-fixed-bottom .progress {
+	margin: 0 10px auto 0;
+	width: 300px;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+.modal-body {
+	max-height: 340px;
+}
+
+table {
+	background-color: rgb(58, 63, 68);
+}
+
+tr .episode {
+	width: 50px;
+	display: inline-block;
+}
+
+.modal-body a {
+	color: #c8c8c8;
+	cursor: pointer;
+}
+
+#mainContainer {
+	padding-bottom: 92px;
+}
+
+.grey {
+	color: #7a8288;
+}
+
+.inputLabel {
+	margin-top: 5px;
+}
+
+.inputLabelEdit {
+	margin-top: 9px;
+}
+
+.navbar-fixed-top .navbar-inner {
+	padding-right: 40px;
+	padding-left: 40px;
+}
+
+.navbar-fixed-top .navbar-inner .btn-group {
+	margin-bottom: 0;
+}
+
+.navbar-fixed-bottom .navbar-inner .btn-group {
+	margin-bottom: 0;
+}
+
+.synopsis {
+	margin-top: 10px;
+}
+
+.rBadge > h6 {
+	margin: 0;
+}
+
+.lBadge > h6 {
+	margin: 0;
+}
+
+.nav-tabs {
+	margin-bottom: 0px;
+}
+
+.tabbable .nav-tabs li a,
+.tabbable .nav-tabs li a:hover,
+.tabbable .nav-tabs li a:focus {
+	border: 1px solid black;
+}
+
+.tabbable .nav-tabs .active a {
+	border-color: black !important;
+	border-style: solid !important;
+	border-width: 1px !important;
+	border-bottom-color: rgb(58, 63, 68) !important;
+}
+
+.tabbable .tab-content {
+	padding: 10px 15px 0 15px;
+	border: 1px solid black;
+	-webkit-border-radius: 0px 4px 4px 4px;
+	   -moz-border-radius: 0px 4px 4px 4px;
+	        border-radius: 0px 4px 4px 4px;
+	background-color: rgb(58, 63, 68);
+}
+
+.tabbable .progress {
+	margin: 0 0 10px 0;
+}
+
+.space {
+	display: inline-block;
+	margin-left: 40px;
+	padding-bottom: 8px;
+	vertical-align: bottom;
+}
+
+.btn {
+	color: #c8c8c8 !important;
+}
+
+a, .btn, .close {
+	cursor: default !important;
+}
+
+.dropdown-menu li a {
+	color: #c8c8c8 !important;
+}
+
+.nav-tabs>.active>a,.nav-tabs>.active>a:hover,.nav-tabs>.active>a:focus
+	{
+	color: #c8c8c8 !important;
+}
+
+.caption {
+	position: absolute;
+	bottom: 7px;
+	right: 7px;
+	left: 7px;
+	background: rgba(0, 0, 0, 0.6);
+	color: #c8c8c8 !important;
+	-webkit-border-radius: 0px 0 2px 2px;
+	   -moz-border-radius: 0px 0 2px 2px;
+	        border-radius: 0px 0 2px 2px;
+	border-top: 1px solid black;
+}
+
+.thumbnail p {
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+			border-radius: 4px;
+	border: 1px solid black;
+	margin: 0;
+}
+
+.caption>h6 {
+	margin: 0;
+	padding-right: 20px;
+}
+
+.nav .active a {
+	cursor: default;
+}
+
+.nav .active .search {
+	cursor: pointer;
+}
+
+.dropdown-menu i,button i {
+	margin: 0 5px 3px 0;
+}
+
+.navbar-fixed-top button i {
+	margin: 0;
+}
+
+.navbar-fixed-top button {
+	width: 40px;
+	text-align: center;
+}
+
+.dropdown-menu .divider {
+	margin: 3px 0 4px 0;
+}
+
+.pagination {
+	margin: -11px 25px 26px 0;
+}
+
+.malv {
+	display: block;
+	margin: 30px 0 20px 0;
+	font-weight: bold;
+	font-size: 24.5px;
+}
+
+.copyright {
+	margin-top: 40px;
+}
+
+.checkbox {
+	vertical-align: bottom;
+	position: relative;
+	top: -4px;
+}
+
+label {
+	margin-top: 5px;
+}
+
+.progress .bar {
+	-webkit-transition: none;
+	   -moz-transition: none;
+		-ms-transition: none;
+		 -o-transition: none;
+	transition: none;
+}
+
+.incEpisode {
+	margin: 0 0 4px 3px;
+	cursor: pointer;
+}
